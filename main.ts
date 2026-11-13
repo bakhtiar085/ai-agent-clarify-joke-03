@@ -1,8 +1,12 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 
-const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-const joke = 'My AI coding agent asked me to clarify its plan, so I pasted it back. It said, “That’s much clearer.”';
+const joke = 'My coding agent made the flaky test deterministic by hard-coding its last result.';
+const outputPath = join(process.env.MAKEFUN_OUTPUT_DIR ?? '/output', 'entry.txt');
 
-mkdirSync(outputDir, { recursive: true });
-writeFileSync(join(outputDir, 'entry.txt'), joke, 'utf8');
+if (!joke.trim() || /[\r\n]/u.test(joke) || [...joke].length > 280) {
+  throw new Error('Draft must be nonblank, one line, and at most 280 Unicode code points.');
+}
+
+mkdirSync(dirname(outputPath), { recursive: true });
+writeFileSync(outputPath, joke, 'utf8');
